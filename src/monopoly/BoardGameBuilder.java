@@ -17,22 +17,46 @@ public class BoardGameBuilder {
 	ArrayList<Group> groups;
 	
 	public BoardGameBuilder() {
-		// default values:
-		// size: 4
+		name = "Monopoly";
+		description = "A wonderful game!";
+		instructions = 	"a. Roll the dice/n" +
+						"b. Move according to dice";
+		chosen_size = 4;
+		board = new ArrayList<Square>();
+		surprise_cards = new HashMap<String,ArrayList<Surprise>>();
+		groups = new ArrayList<Group>();
 	}
 	public void setChosenSize(int size) {
-		// check if size is multiplication of 4
+		if (size%4 ==0)
+			chosen_size=size;
+		else
+			System.out.println("[ERROR] Size should be divisble by 4");
 	}
-	public void AddGroup() {
+	public void setName(String name) {
+		
+	}
+	public void setDescription(String description) {
+		
+	}
+	public void setInstructions(String instructions) {
+		
+	}
+	public void AddGroup(Group g) {
 		
 	}
 	public void deleteGroup(String name) {
 		
 	}
-	public void AddSquare() {
+	public void AddSquare(Square s) {
 		
 	}
 	public void deleteSquare(String name) {
+		
+	}
+	public void deleteSquare(Square s1, Square s2) {
+		
+	}
+	public void printAllSquares() {
 		
 	}
 	public void exportBoard(String filename) {
@@ -54,6 +78,9 @@ public class BoardGameBuilder {
 	public void shuffleSquares() {
 		
 	}
-	// UI interacts
+	public void addSurprise(Surprise s) {
+		
+	}
+	// UI wrappers
 	
 }
