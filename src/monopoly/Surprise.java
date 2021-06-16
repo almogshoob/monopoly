@@ -7,6 +7,10 @@ public class Surprise implements Cardable {
 		content=s;
 	}
 	
+	public String getContent() {
+		return this.content;
+	}
+	
 	public void printCard() {
 		System.out.println("Card:");
 		System.out.println(content);

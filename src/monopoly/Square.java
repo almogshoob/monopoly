@@ -7,8 +7,6 @@ public abstract class Square {
 	private String description;
 	private Group group;
 	
-	
-	
 	//CTOR
 	public Square(String name, String description, Group group) {
 		this.name = name;

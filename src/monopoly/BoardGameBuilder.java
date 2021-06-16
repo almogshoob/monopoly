@@ -18,9 +18,9 @@ public class BoardGameBuilder {
 	String description;
 	String instructions;
 	int chosen_size;
+	ArrayList<Group> groups;
 	ArrayList<Square> board;
 	HashMap<String,ArrayList<Surprise>> surprise_cards;
-	ArrayList<Group> groups;
 	
 	public BoardGameBuilder() {
 		name = "Monopoly";
@@ -47,37 +47,35 @@ public class BoardGameBuilder {
 	public void setInstructions(String instructions) {
 		this.instructions=instructions;
 	}
-	private Group GetGroup(String name) {
+	private Group getGroup(String name) {
 		for (Group g: this.groups)
 			if (g.getName() == name)
 				return g;
 		return null;
 	}
-	public boolean AddGroup(Group g) {
+	public int addGroup(Group g) {
 		if (this.groups.contains(g))
-			return false;
+			return -1;
 		this.groups.add(g);
-		return true;
+		return 0;
 	}
-	public boolean deleteGroup(String name) {
-		Group to_delete = GetGroup(name);
+	public int deleteGroup(String name) {
+		Group to_delete = getGroup(name);
 		if (to_delete == null)
-			return false;
+			return -1;
 		for (Square s: this.board)
 			if (s.getGroup() == to_delete)
 				s.setGroup(null);
 		this.groups.remove(to_delete);
-		return true;
+		return 0;
 	}
-	public boolean SetGroup(String old_name, String new_name, String new_color) {
-		for (Group g: this.groups) {
-			if (g.getName() == old_name) {
-				g.setName(new_name);
-				g.setColor(new_color);
-				return true;
-			}
-		}
-		return false;
+	public int SetGroup(String old_name, String new_name, String new_color) {
+		Group g = this.getGroup(old_name);
+		if (g == null)
+			return -1;
+		g.setName(new_name);
+		g.setColor(new_color);
+		return 0;
 	}
 	public void AddSquare(Square s) {
 		
@@ -91,24 +89,24 @@ public class BoardGameBuilder {
 	public void printAllSquares() {
 		
 	}
-	public boolean exportBoard(String file_name) {
+	public int exportBoard(String file_name) {
 		File board_file = null;
         try {
         	board_file = new File(file_name + ".txt");
             if (!board_file.createNewFile()) {
-                System.out.println("File already exists!");
-                return false;
+                System.out.println("[ERROR] File already exists!");
+                return -1;
             }
         } catch (IOException e) {
-            System.out.println("Error opening file!");
+            System.out.println("[ERROR] Error opening file!");
             e.printStackTrace();
-            return false;
+            return -1;
         }
     	
         String text = "";
         text = text + this.name + "%%\n" + this.description + "%%\n" + this.instructions + "%%\n";
         text = text + String.valueOf(this.chosen_size) + "%%\n";
-        for (Group g: groups)
+        for (Group g: this.groups)
         	text = text + g.getName() + "@@" + g.getColor() + "##\n";
         text += "%%\n";
         for (Square s: board) {
@@ -125,7 +123,7 @@ public class BoardGameBuilder {
         for (HashMap.Entry<String,ArrayList<Surprise>> entry : surprise_cards.entrySet()) {
         	text = text + entry.getKey() + "@@";
         	for (Surprise s: entry.getValue())
-        		text = text + s.getContent() + "@@"; //TODO: Surprise.getContent()
+        		text = text + s.getContent() + "@@";
         	text += "##\n";
         }
         
@@ -137,9 +135,9 @@ public class BoardGameBuilder {
         } catch (IOException e) {
             System.out.println("Error writing to file!");
             e.printStackTrace();
-            return false;
+            return -1;
         }
-    	return true;
+    	return 0;
 	}
 	public void importBoard(String file_name) {
 		//TODO: let the player know current board will be deleted
@@ -151,9 +149,9 @@ public class BoardGameBuilder {
                 text += myReader.nextLine();
             }
             myReader.close();
-            System.out.println("Read Successfully!");
+            System.out.println("[ERROR] Read Successfully!");
         } catch (FileNotFoundException e) {
-            System.out.println("File not found!");
+            System.out.println("[ERROR] File not found!");
             e.printStackTrace();
         }
 		
@@ -166,7 +164,7 @@ public class BoardGameBuilder {
 		String[] groups_text = attributes[4].split("##\n");
 		for (String g: groups_text) {
 			String[] name_color = g.split("@@");
-			this.AddGroup(new Group(name_color[0], name_color[1]));
+			this.addGroup(new Group(name_color[0], name_color[1]));
 		}
 		this.surprise_cards = new HashMap<String,ArrayList<Surprise>>();
 		String[] surprise_text = attributes[6].split("##\n");
@@ -175,14 +173,14 @@ public class BoardGameBuilder {
 			String key = key_values[0];
 			String[] values = key_values[1].split("@@");
 			for (String v: values)
-				this.addSurprise(key, new Surprise(v)); //TODO: Surprise constructor
+				this.addSurprise(key, new Surprise(v));
 		}
 		this.board = new ArrayList<Square>();
 		String[] squares = attributes[5].split("##\n");
 		for (String s: squares) {
 			String[] info = s.split("@@"); // info = class, value/action, name, description, group
 			String class_name = info[0];
-			Group g = this.GetGroup(info[4]);
+			Group g = this.getGroup(info[4]);
 			if (class_name == "SimpleSquare")
 				this.board.add(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
 			else // SpecialSquare
@@ -208,12 +206,11 @@ public class BoardGameBuilder {
 		
 	}
 	public void addSurprise(String key, Surprise s) {
-		ArrayList<Surprise> temp=surprise_cards.get(key);
-		if(temp==null) { //create a new key
-			temp.add(s);
-			surprise_cards.put(key, temp);
-			return;
-		}
+		ArrayList<Surprise> temp = this.surprise_cards.get(key);
+		if (temp==null)//create a new key
+			temp = new ArrayList<Surprise>();
+		temp.add(s);
+		surprise_cards.put(key, temp);
 	}
 	// TODO: UI wrappers
 	
