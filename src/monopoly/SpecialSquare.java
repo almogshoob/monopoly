@@ -18,8 +18,7 @@ public class SpecialSquare extends Square {
 	public String getAction() {
 		return action;	
 	}
-	
 	public String toString() {
-        return String.format("Action:\n" + action);
+        return String.format(super.toString() + "Action:\n" + action);
     }
 }

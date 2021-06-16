@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -77,15 +78,38 @@ public class BoardGameBuilder {
 		g.setColor(new_color);
 		return 0;
 	}
-	public void AddSquare(Square s) {
-		
+	public void AddSquare(Square s) {	
+		board.add(s);
 	}
-	public void deleteSquare(String name) {
-		
+	public int deleteSquare(String name) {
+		Square s = findSquareByName(name);
+		if (s == null)
+			return -1;
+		board.remove(s);
+		return 0;
 	}
-	public void deleteSquare(Square s1, Square s2) {
+	public int swapSquare(Square s1, Square s2) {
+		if (!( board.contains(s2) && board.contains(s1) ))
+			return -1;
+		//Square temp;
+		//int i_1 = board.indexOf(s1);
+		//int i_2 = board.indexOf(s2);
+		//temp = board.get(i_1);
+		//board.add(i_1, s2);
+		//board.remove(i_1 +1);
+		//board.add(i_2,temp);
+		//board.remove(i_2 +1);
 		
+		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
+		return 0;
 	}
+	public void shuffleSquares() {
+		Collections.shuffle(board);
+	}
+	
+	
+	
+	
 	public void printAllSquares() {
 		
 	}
@@ -202,9 +226,7 @@ public class BoardGameBuilder {
 	public void printSquareByName(String name) {
 		// using find square..
 	}
-	public void shuffleSquares() {
-		
-	}
+	
 	public void addSurprise(String key, Surprise s) {
 		ArrayList<Surprise> temp = this.surprise_cards.get(key);
 		if (temp==null)//create a new key

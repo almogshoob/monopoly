@@ -21,10 +21,9 @@ public class SimpleSquare extends Square implements Cardable {
 		return value;	
 	}
 	public String toString() {
-        return String.format("Value:\n" + value);
+        return String.format(super.toString() + "Value:\n" + value);
     }
-	
-	
+		
 	@Override
 	public void printCard() {
 		// TODO Auto-generated method stub
