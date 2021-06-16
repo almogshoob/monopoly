@@ -1,0 +1,250 @@
+package monopoly;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Scanner;
+
+
+// Coding style:
+// Classes: 			ClassName
+// Objects/variables: 	object_name
+// Functions:			functionName
+public class BoardGameBuilder {
+	String name;
+	String description;
+	String instructions;
+	int chosen_size;
+	ArrayList<Group> groups;
+	ArrayList<Square> board;
+	HashMap<String,ArrayList<Surprise>> surprise_cards;
+	
+	public BoardGameBuilder() {
+		name = "Monopoly";
+		description = "A wonderful game!";
+		instructions = 	"a. Roll the dice/n" +
+						"b. Move according to dice";
+		chosen_size = 4;
+		board = new ArrayList<Square>();
+		surprise_cards = new HashMap<String,ArrayList<Surprise>>();
+		groups = new ArrayList<Group>();
+	}
+	public void setChosenSize(int size) {
+		if (size%4 ==0)
+			chosen_size=size;
+		else
+			System.out.println("[ERROR] Size should be divisble by 4");
+	}
+	public void setName(String name) {
+		this.name=name;
+	}
+	public void setDescription(String description) {
+		this.description=description;
+	}
+	public void setInstructions(String instructions) {
+		this.instructions=instructions;
+	}
+	private Group getGroup(String name) {
+		for (Group g: this.groups)
+			if (g.getName() == name)
+				return g;
+		return null;
+	}
+	public int addGroup(Group g) {
+		if (this.groups.contains(g))
+			return -1;
+		this.groups.add(g);
+		return 0;
+	}
+	public int deleteGroup(String name) {
+		Group to_delete = getGroup(name);
+		if (to_delete == null)
+			return -1;
+		for (Square s: this.board)
+			if (s.getGroup() == to_delete)
+				s.setGroup(null);
+		this.groups.remove(to_delete);
+		return 0;
+	}
+	public int SetGroup(String old_name, String new_name, String new_color) {
+		Group g = this.getGroup(old_name);
+		if (g == null)
+			return -1;
+		g.setName(new_name);
+		g.setColor(new_color);
+		return 0;
+	}
+	public void AddSquare(Square s) {	
+		board.add(s);
+	}
+	public int deleteSquare(String name) {
+		Square s = findSquareByName(name);
+		if (s == null)
+			return -1;
+		board.remove(s);
+		return 0;
+	}
+	public int swapSquare(Square s1, Square s2) {
+		if (!( board.contains(s2) && board.contains(s1) ))
+			return -1;
+		//Square temp;
+		//int i_1 = board.indexOf(s1);
+		//int i_2 = board.indexOf(s2);
+		//temp = board.get(i_1);
+		//board.add(i_1, s2);
+		//board.remove(i_1 +1);
+		//board.add(i_2,temp);
+		//board.remove(i_2 +1);
+		
+		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
+		return 0;
+	}
+	public void shuffleSquares() {
+		Collections.shuffle(board);
+	}
+	
+	
+	
+	
+	public void printAllSquares() {
+		
+	}
+	public int exportBoard(String file_name) {
+		File board_file = null;
+        try {
+        	board_file = new File(file_name + ".txt");
+            if (!board_file.createNewFile()) {
+                System.out.println("[ERROR] File already exists!");
+                return -1;
+            }
+        } catch (IOException e) {
+            System.out.println("[ERROR] Error opening file!");
+            e.printStackTrace();
+            return -1;
+        }
+    	
+        String text = "";
+        text = text + this.name + "%%\n" + this.description + "%%\n" + this.instructions + "%%\n";
+        text = text + String.valueOf(this.chosen_size) + "%%\n";
+        for (Group g: this.groups)
+        	text = text + g.getName() + "@@" + g.getColor() + "##\n";
+        text += "%%\n";
+        for (Square s: board) {
+        	String class_name = s.getClass().getName();
+        	text = text + class_name + "@@";
+        	if (class_name == "SimpleSquare")
+        		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
+        	else // SpecialSquare
+        		text = text + ((SpecialSquare)s).getAction() + "@@";
+        	text = text + s.getName() + "@@" + s.getDescription() + "@@" + s.getGroup().getName();
+        	text += "##\n";
+        }
+        text = text + "%%\n";
+        for (HashMap.Entry<String,ArrayList<Surprise>> entry : surprise_cards.entrySet()) {
+        	text = text + entry.getKey() + "@@";
+        	for (Surprise s: entry.getValue())
+        		text = text + s.getContent() + "@@";
+        	text += "##\n";
+        }
+        
+        try {
+            FileWriter myWriter = new FileWriter(board_file.getName());
+            myWriter.write(text);
+            myWriter.close();
+            System.out.println("Successfully saved!");
+        } catch (IOException e) {
+            System.out.println("Error writing to file!");
+            e.printStackTrace();
+            return -1;
+        }
+    	return 0;
+	}
+	public void importBoard(String file_name) {
+		//TODO: let the player know current board will be deleted
+		String text = "";
+		try {
+            File board_file = new File(file_name + ".txt");
+            Scanner myReader = new Scanner(board_file);
+            while (myReader.hasNextLine()) {
+                text += myReader.nextLine();
+            }
+            myReader.close();
+            System.out.println("[ERROR] Read Successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("[ERROR] File not found!");
+            e.printStackTrace();
+        }
+		
+		String[] attributes = text.split("%%\n");
+		this.name = attributes[0];
+		this.description = attributes[1];
+		this.instructions = attributes[2];
+		this.chosen_size = Integer.parseInt(attributes[3]);
+		this.groups = new ArrayList<Group>();
+		String[] groups_text = attributes[4].split("##\n");
+		for (String g: groups_text) {
+			String[] name_color = g.split("@@");
+			this.addGroup(new Group(name_color[0], name_color[1]));
+		}
+		this.surprise_cards = new HashMap<String,ArrayList<Surprise>>();
+		String[] surprise_text = attributes[6].split("##\n");
+		for (String s: surprise_text) {
+			String[] key_values = s.split("@@", 2);
+			String key = key_values[0];
+			String[] values = key_values[1].split("@@");
+			for (String v: values)
+				this.addSurprise(key, new Surprise(v));
+		}
+		this.board = new ArrayList<Square>();
+		String[] squares = attributes[5].split("##\n");
+		for (String s: squares) {
+			String[] info = s.split("@@"); // info = class, value/action, name, description, group
+			String class_name = info[0];
+			Group g = this.getGroup(info[4]);
+			if (class_name == "SimpleSquare")
+				this.board.add(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
+			else // SpecialSquare
+				this.board.add(new SpecialSquare(info[2], info[3], g, info[1]));
+		}
+	}
+	public void printBoard() {
+		// Squares will be printed by order and according to chosen_size
+		// TODO: check we have enough squares before start printing
+	}
+<<<<<<< HEAD
+	public Square findSquareByName(String name) {
+		for (Square s : board) {
+			if (s.getName() == name)
+				return s;
+		}
+		System.out.println("[ERROR] couldn't find " + name);
+		return null;
+=======
+	public Square findSquareByName(String name){
+		 for(Square s : board){
+			   if(s.getName() == name){
+				   return s;
+			   }
+		 }
+		 return null;
+		
+>>>>>>> 8549462 (Omer almog and yair the kings)
+	}
+	public void printSquareByName(String name) {
+		// using find square..
+	}
+	
+	public void addSurprise(String key, Surprise s) {
+		ArrayList<Surprise> temp = this.surprise_cards.get(key);
+		if (temp==null)//create a new key
+			temp = new ArrayList<Surprise>();
+		temp.add(s);
+		surprise_cards.put(key, temp);
+	}
+	// TODO: UI wrappers
+	
+}
