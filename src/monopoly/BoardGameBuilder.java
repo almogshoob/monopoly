@@ -106,12 +106,8 @@ public class BoardGameBuilder {
 	public void shuffleSquares() {
 		Collections.shuffle(board);
 	}
-	
-	
-	
-	
 	public void printAllSquares() {
-		
+		//TODO
 	}
 	public int exportBoard(String file_name) {
 		File board_file = null;
@@ -224,9 +220,8 @@ public class BoardGameBuilder {
 		return null;
 	}
 	public void printSquareByName(String name) {
-		// using find square..
-	}
-	
+		// TODO: using find square..
+	}	
 	public void addSurprise(String key, Surprise s) {
 		ArrayList<Surprise> temp = this.surprise_cards.get(key);
 		if (temp==null)//create a new key
@@ -235,5 +230,4 @@ public class BoardGameBuilder {
 		surprise_cards.put(key, temp);
 	}
 	// TODO: UI wrappers
-	
 }
