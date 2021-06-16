@@ -1,7 +1,13 @@
 package monopoly;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
+
 
 // Coding style:
 // Classes: 			ClassName
@@ -85,11 +91,115 @@ public class BoardGameBuilder {
 	public void printAllSquares() {
 		
 	}
-	public void exportBoard(String filename) {
-		
+	public boolean exportBoard(String file_name) {
+		File board_file = null;
+        try {
+        	board_file = new File(file_name + ".txt");
+            if (!board_file.createNewFile()) {
+                System.out.println("File already exists!");
+                return false;
+            }
+        } catch (IOException e) {
+            System.out.println("Error opening file!");
+            e.printStackTrace();
+            return false;
+        }
+    	
+        String text = "";
+        text = text + this.name + "%%\n" + this.description + "%%\n" + this.instructions + "%%\n";
+        text = text + String.valueOf(this.chosen_size) + "%%\n";
+        for (Group g: groups)
+        	text = text + g.getName() + "@@" + g.getColor() + "##\n";
+        text += "%%\n";
+        for (Square s: board) {
+        	String class_name = s.getClass().getName();
+        	text = text + class_name + "@@";
+        	if (class_name == "SimpleSquare")
+        		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
+        	else // SpecialSquare
+        		text = text + ((SpecialSquare)s).getAction() + "@@";
+        	text = text + s.getName() + "@@" + s.getDescription() + "@@";
+        	text = text + s.getGroup().getName() + "@@" + s.getGroup().getColor();
+        	text += "##\n";
+        }
+        text = text + "%%\n";
+        for (HashMap.Entry<String,ArrayList<Surprise>> entry : surprise_cards.entrySet()) {
+        	text = text + entry.getKey() + "@@";
+        	for (Surprise s: entry.getValue())
+        		text = text + s.getContent() + "@@"; //TODO: Surprise.getContent()
+        	text += "##\n";
+        }
+        
+        try {
+            FileWriter myWriter = new FileWriter(board_file.getName());
+            myWriter.write(text);
+            myWriter.close();
+            System.out.println("Successfully saved!");
+        } catch (IOException e) {
+            System.out.println("Error writing to file!");
+            e.printStackTrace();
+            return false;
+        }
+    	return true;
 	}
-	public void importBoard(String filename) {
-		// let the player know current board will be deleted
+	public void importBoard(String file_name) {
+		//TODO: let the player know current board will be deleted
+		String text = "";
+		try {
+            File board_file = new File(file_name + ".txt");
+            Scanner myReader = new Scanner(board_file);
+            while (myReader.hasNextLine()) {
+                text += myReader.nextLine();
+            }
+            myReader.close();
+            System.out.println("Read Successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+            e.printStackTrace();
+        }
+		
+		String[] attributes = text.split("%%\n");
+		this.name = attributes[0];
+		this.description = attributes[1];
+		this.instructions = attributes[2];
+		this.chosen_size = Integer.parseInt(attributes[3]);
+		this.groups = new ArrayList<Group>();
+		String[] groups_text = attributes[4].split("##\n");
+		for (String g: groups_text) {
+			String[] name_color = g.split("@@");
+			this.AddGroup(new Group(name_color[0], name_color[1]));
+		}
+		this.surprise_cards = new HashMap<String,ArrayList<Surprise>>();
+		String[] surprise_text = attributes[6].split("##\n");
+		for (String s: surprise_text) {
+			String[] key_values = s.split("@@", 2);
+			String key = key_values[0];
+			String[] values = key_values[1].split("@@");
+			for (String v: values)
+				this.addSurprise(key, new Surprise(v)); //TODO: Surprise constructor
+		}
+		this.board = new ArrayList<Square>();
+		String[] squares = attributes[5].split("##\n");
+		for (String s: squares) {
+			String[] info = s.split("@@");
+			String class_name = info[0];
+			//TODO: check class and add square
+		}
+		
+		
+		/* reference to export file:
+		for (Square s: board) {
+        	String class_name = s.getClass().getName();
+        	text = text + class_name + "@@";
+        	if (class_name == "SimpleSquare")
+        		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
+        	else // SpecialSquare
+        		text = text + ((SpecialSquare)s).getAction() + "@@";
+        	text = text + s.getName() + "@@" + s.getDescription() + "@@";
+        	text = text + s.getGroup().getName() + "@@" + s.getGroup().getColor();
+        	text += "##\n";
+        }*/
+		
 	}
 	public void printBoard() {
 		// Squares will be printed by order and according to chosen_size
@@ -104,9 +214,9 @@ public class BoardGameBuilder {
 	public void shuffleSquares() {
 		
 	}
-	public void addSurprise(Surprise s) {
+	public void addSurprise(String key, Surprise s) {
 		
 	}
-	// UI wrappers
+	// TODO: UI wrappers
 	
 }
