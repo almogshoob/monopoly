@@ -39,13 +39,13 @@ public class BoardGameBuilder {
 			System.out.println("[ERROR] Size should be divisble by 4");
 	}
 	public void setName(String name) {
-		
+		this.name=name;
 	}
 	public void setDescription(String description) {
-		
+		this.description=description;
 	}
 	public void setInstructions(String instructions) {
-		
+		this.instructions=instructions;
 	}
 	private Group GetGroup(String name) {
 		for (Group g: this.groups)
@@ -194,7 +194,12 @@ public class BoardGameBuilder {
 		// TODO: check we have enough squares before start printing
 	}
 	public Square findSquareByName(String name) {
-		
+		for (Square s : board) {
+			if (s.getName() == name)
+				return s;
+		}
+		System.out.println("[ERROR] couldn't find " + name);
+		return null;
 	}
 	public void printSquareByName(String name) {
 		// using find square..
@@ -209,7 +214,6 @@ public class BoardGameBuilder {
 			surprise_cards.put(key, temp);
 			return;
 		}
-		temp.add(s);
 	}
 	// TODO: UI wrappers
 	
