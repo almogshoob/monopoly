@@ -41,11 +41,37 @@ public class BoardGameBuilder {
 	public void setInstructions(String instructions) {
 		
 	}
-	public void AddGroup(Group g) {
-		
+	public boolean AddGroup(Group g) {
+		if (groups.contains(g))
+			return false;
+		groups.add(g);
+		return true;
 	}
-	public void deleteGroup(String name) {
-		
+	public boolean deleteGroup(String name) {
+		Group to_delete = null;
+		for (Group g: groups) {
+			if (g.getName() == name) {
+				to_delete = g;
+				break;
+			}
+		}
+		if (to_delete == null)
+			return false;
+		for (Square s: board)
+			if (s.getGroup() == to_delete)
+				s.setGroup(null);
+		groups.remove(to_delete);
+		return true;
+	}
+	public boolean SetGroup(String old_name, String new_name, String new_color) {
+		for (Group g: groups) {
+			if (g.getName() == old_name) {
+				g.setName(new_name);
+				g.setColor(new_color);
+				return true;
+			}
+		}
+		return false;
 	}
 	public void AddSquare(Square s) {
 		

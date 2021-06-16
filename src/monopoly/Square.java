@@ -35,7 +35,7 @@ public abstract class Square {
 		return group;		
 	}
 	
-	//todo
+	//TODO
 	public void printSquare() {
 		
 	//implement smart print
