@@ -203,7 +203,13 @@ public class BoardGameBuilder {
 		
 	}
 	public void addSurprise(String key, Surprise s) {
-		
+		ArrayList<Surprise> temp=surprise_cards.get(key);
+		if(temp==null) { //create a new key
+			temp.add(s);
+			surprise_cards.put(key, temp);
+			return;
+		}
+		temp.add(s);
 	}
 	// TODO: UI wrappers
 	
