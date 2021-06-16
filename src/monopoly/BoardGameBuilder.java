@@ -9,11 +9,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
+// TODO:
+// 1. Eilon/Yair: shuffle surprises instead of squares?? If yes, please let me (Omer) know so I can add to menu
+// 2. remove square description? if Yes, please fix in the menu.
+// 3. Eilon/Yair: add log print upon success to each function IN BASE CLASS ONLY, use LOG(Object). for example look at setChosenSize
+// 4. implement nice print of all squares (Print to JOptionPane) and add to menuComponents in [case 7: Review Squares]. this is what we call "printAllSquares"
+// 5. Yair: implement printSimpleSquareCards and printSurpriseCards by iterating all relevant cards and using Cardable.printCard. Print to JOptionPane
+// 6. Think and try edge cases
 
 // Coding style:
 // Classes: 			ClassName
 // Objects/variables: 	object_name
 // Functions:			functionName
+
 public class BoardGameBuilder {
 	String name;
 	String description;
@@ -33,33 +41,45 @@ public class BoardGameBuilder {
 		surprise_cards = new HashMap<String,ArrayList<Surprise>>();
 		groups = new ArrayList<Group>();
 	}
+	
 	public void setChosenSize(int size) {
-		if (size%4 ==0)
+		if (size%4 ==0) {
 			chosen_size=size;
+			LOG(chosen_size);
+		}
 		else
 			System.out.println("[ERROR] Size should be divisble by 4");
 	}
+	
 	public void setName(String name) {
 		this.name=name;
+		LOG(name);
 	}
+	
 	public void setDescription(String description) {
 		this.description=description;
+		LOG(description);
 	}
+	
 	public void setInstructions(String instructions) {
 		this.instructions=instructions;
+		LOG(instructions);
 	}
-	private Group getGroup(String name) {
+	
+	public Group getGroup(String name) {
 		for (Group g: this.groups)
 			if (g.getName() == name)
 				return g;
 		return null;
 	}
+	
 	public int addGroup(Group g) {
 		if (this.groups.contains(g))
 			return -1;
 		this.groups.add(g);
 		return 0;
 	}
+	
 	public int deleteGroup(String name) {
 		Group to_delete = getGroup(name);
 		if (to_delete == null)
@@ -70,6 +90,7 @@ public class BoardGameBuilder {
 		this.groups.remove(to_delete);
 		return 0;
 	}
+	
 	public int SetGroup(String old_name, String new_name, String new_color) {
 		Group g = this.getGroup(old_name);
 		if (g == null)
@@ -78,9 +99,12 @@ public class BoardGameBuilder {
 		g.setColor(new_color);
 		return 0;
 	}
+	
 	public void AddSquare(Square s) {	
 		board.add(s);
+		LOG(s);
 	}
+	
 	public int deleteSquare(String name) {
 		Square s = findSquareByName(name);
 		if (s == null)
@@ -88,6 +112,7 @@ public class BoardGameBuilder {
 		board.remove(s);
 		return 0;
 	}
+	
 	public int swapSquare(Square s1, Square s2) {
 		if (!( board.contains(s2) && board.contains(s1) ))
 			return -1;
@@ -103,12 +128,15 @@ public class BoardGameBuilder {
 		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
 		return 0;
 	}
+	
 	public void shuffleSquares() {
 		Collections.shuffle(board);
 	}
+	
 	public void printAllSquares() {
 		//TODO
 	}
+	
 	public int exportBoard(String file_name) {
 		File board_file = null;
         try {
@@ -159,6 +187,7 @@ public class BoardGameBuilder {
         }
     	return 0;
 	}
+	
 	public void importBoard(String file_name) {
 		//TODO: let the player know current board will be deleted
 		String text = "";
@@ -207,10 +236,12 @@ public class BoardGameBuilder {
 				this.board.add(new SpecialSquare(info[2], info[3], g, info[1]));
 		}
 	}
+	
 	public void printBoard() {
 		// Squares will be printed by order and according to chosen_size
 		// TODO: check we have enough squares before start printing
 	}
+	
 	public Square findSquareByName(String name) {
 		for (Square s : board) {
 			if (s.getName() == name)
@@ -219,9 +250,11 @@ public class BoardGameBuilder {
 		System.out.println("[ERROR] couldn't find " + name);
 		return null;
 	}
+	
 	public void printSquareByName(String name) {
 		// TODO: using find square..
-	}	
+	}
+	
 	public void addSurprise(String key, Surprise s) {
 		ArrayList<Surprise> temp = this.surprise_cards.get(key);
 		if (temp==null)//create a new key
@@ -229,5 +262,8 @@ public class BoardGameBuilder {
 		temp.add(s);
 		surprise_cards.put(key, temp);
 	}
-	// TODO: UI wrappers
+
+	public static void LOG(Object o) {
+		System.out.println("[LOG] <" + Thread.currentThread().getStackTrace()[2].getMethodName() + "> " + o.toString());
+	}
 }

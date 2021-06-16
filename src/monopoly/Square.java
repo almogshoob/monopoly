@@ -51,7 +51,7 @@ public abstract class Square {
 		
 	}
 	public String toString() {
-        return String.format("Squere:\n" + "Name: "+this.name + "Description: " + this.description + "Group: " + this.group);
+        return String.format("Squere:\n" + " Name: "+this.name + " Description: " + this.description + " Group: " + this.group);
     }
 
 }

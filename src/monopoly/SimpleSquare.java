@@ -33,7 +33,7 @@ public class SimpleSquare extends Square implements Cardable {
 		String shell = new String(chars);
 		
 		System.out.println(shell);
-		System.out.println("Card of "+super.name);
+		System.out.println("Card of "+super.getName());
 		System.out.println(super.toString() + "\n" + this.toString());
 		System.out.println(shell);		
 		
