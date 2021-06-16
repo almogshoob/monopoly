@@ -35,6 +35,10 @@ public abstract class Square {
 		return group;		
 	}
 	
+	public void setGroup(Group g) {	
+		this.group = g;
+	}
+	
 	//TODO
 	public void printSquare() {
 		
