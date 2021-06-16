@@ -47,30 +47,30 @@ public class BoardGameBuilder {
 	public void setInstructions(String instructions) {
 		
 	}
+	private Group GetGroup(String name) {
+		for (Group g: this.groups)
+			if (g.getName() == name)
+				return g;
+		return null;
+	}
 	public boolean AddGroup(Group g) {
-		if (groups.contains(g))
+		if (this.groups.contains(g))
 			return false;
-		groups.add(g);
+		this.groups.add(g);
 		return true;
 	}
 	public boolean deleteGroup(String name) {
-		Group to_delete = null;
-		for (Group g: groups) {
-			if (g.getName() == name) {
-				to_delete = g;
-				break;
-			}
-		}
+		Group to_delete = GetGroup(name);
 		if (to_delete == null)
 			return false;
-		for (Square s: board)
+		for (Square s: this.board)
 			if (s.getGroup() == to_delete)
 				s.setGroup(null);
-		groups.remove(to_delete);
+		this.groups.remove(to_delete);
 		return true;
 	}
 	public boolean SetGroup(String old_name, String new_name, String new_color) {
-		for (Group g: groups) {
+		for (Group g: this.groups) {
 			if (g.getName() == old_name) {
 				g.setName(new_name);
 				g.setColor(new_color);
@@ -118,8 +118,7 @@ public class BoardGameBuilder {
         		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
         	else // SpecialSquare
         		text = text + ((SpecialSquare)s).getAction() + "@@";
-        	text = text + s.getName() + "@@" + s.getDescription() + "@@";
-        	text = text + s.getGroup().getName() + "@@" + s.getGroup().getColor();
+        	text = text + s.getName() + "@@" + s.getDescription() + "@@" + s.getGroup().getName();
         	text += "##\n";
         }
         text = text + "%%\n";
@@ -181,25 +180,14 @@ public class BoardGameBuilder {
 		this.board = new ArrayList<Square>();
 		String[] squares = attributes[5].split("##\n");
 		for (String s: squares) {
-			String[] info = s.split("@@");
+			String[] info = s.split("@@"); // info = class, value/action, name, description, group
 			String class_name = info[0];
-			//TODO: check class and add square
+			Group g = this.GetGroup(info[4]);
+			if (class_name == "SimpleSquare")
+				this.board.add(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
+			else // SpecialSquare
+				this.board.add(new SpecialSquare(info[2], info[3], g, info[1]));
 		}
-		
-		
-		/* reference to export file:
-		for (Square s: board) {
-        	String class_name = s.getClass().getName();
-        	text = text + class_name + "@@";
-        	if (class_name == "SimpleSquare")
-        		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
-        	else // SpecialSquare
-        		text = text + ((SpecialSquare)s).getAction() + "@@";
-        	text = text + s.getName() + "@@" + s.getDescription() + "@@";
-        	text = text + s.getGroup().getName() + "@@" + s.getGroup().getColor();
-        	text += "##\n";
-        }*/
-		
 	}
 	public void printBoard() {
 		// Squares will be printed by order and according to chosen_size
