@@ -10,6 +10,7 @@ public class Group {
 		this.color = color;
 	}
 	
+	// Getters
 	public String getName() {
 		return this.name;
 	}
@@ -18,6 +19,7 @@ public class Group {
 		return this.color;
 	}
 	
+	// Setters
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -26,6 +28,7 @@ public class Group {
 		this.color = color;
 	}
 	
+	// for 'contains' function
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -35,7 +38,7 @@ public class Group {
 		if (!(obj instanceof Group))
 			return false;
 		Group other = (Group) obj;
-		return this.name.equalsIgnoreCase(other.name);
+		return this.name.equalsIgnoreCase(other.name); // each group has a unique name
 	}
 	
 }

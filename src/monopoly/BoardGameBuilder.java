@@ -68,13 +68,13 @@ public class BoardGameBuilder {
 	
 	public Group getGroup(String name) {
 		for (Group g: this.groups)
-			if (g.getName() == name)
+			if (g.getName() == name) // each group has a unique name
 				return g;
 		return null;
 	}
 	
 	public int addGroup(Group g) {
-		if (this.groups.contains(g))
+		if (this.groups.contains(g)) // contain = by name
 			return -1;
 		this.groups.add(g);
 		return 0;
@@ -82,9 +82,9 @@ public class BoardGameBuilder {
 	
 	public int deleteGroup(String name) {
 		Group to_delete = getGroup(name);
-		if (to_delete == null)
+		if (to_delete == null) // no such group
 			return -1;
-		for (Square s: this.board)
+		for (Square s: this.board) // update squares which point to this group
 			if (s.getGroup() == to_delete)
 				s.setGroup(null);
 		this.groups.remove(to_delete);
@@ -93,7 +93,7 @@ public class BoardGameBuilder {
 	
 	public int SetGroup(String old_name, String new_name, String new_color) {
 		Group g = this.getGroup(old_name);
-		if (g == null)
+		if (g == null) // no such group
 			return -1;
 		g.setName(new_name);
 		g.setColor(new_color);
@@ -139,6 +139,7 @@ public class BoardGameBuilder {
 	
 	public int exportBoard(String file_name) {
 		File board_file = null;
+		// open file
         try {
         	board_file = new File(file_name + ".txt");
             if (!board_file.createNewFile()) {
@@ -151,12 +152,19 @@ public class BoardGameBuilder {
             return -1;
         }
     	
+        // create text to write to file
+        // '%%\n' between attributes (name, borad, groups, etc..)
+        // '##\n' between object in list/map
+        // '@@' as a ',' between object properties
         String text = "";
+        // namen description, instruction, chosen_size
         text = text + this.name + "%%\n" + this.description + "%%\n" + this.instructions + "%%\n";
         text = text + String.valueOf(this.chosen_size) + "%%\n";
+        // groups
         for (Group g: this.groups)
         	text = text + g.getName() + "@@" + g.getColor() + "##\n";
         text += "%%\n";
+        // squares
         for (Square s: board) {
         	String class_name = s.getClass().getName();
         	text = text + class_name + "@@";
@@ -168,6 +176,7 @@ public class BoardGameBuilder {
         	text += "##\n";
         }
         text = text + "%%\n";
+        // surprise cards
         for (HashMap.Entry<String,ArrayList<Surprise>> entry : surprise_cards.entrySet()) {
         	text = text + entry.getKey() + "@@";
         	for (Surprise s: entry.getValue())
@@ -175,6 +184,7 @@ public class BoardGameBuilder {
         	text += "##\n";
         }
         
+        // write to file
         try {
             FileWriter myWriter = new FileWriter(board_file.getName());
             myWriter.write(text);
@@ -190,6 +200,8 @@ public class BoardGameBuilder {
 	
 	public void importBoard(String file_name) {
 		//TODO: let the player know current board will be deleted
+		
+		//read from file
 		String text = "";
 		try {
             File board_file = new File(file_name + ".txt");
@@ -204,6 +216,8 @@ public class BoardGameBuilder {
             e.printStackTrace();
         }
 		
+		// split text and set BoardGameBuilder attributes
+		// exactly as we explained in 'exportBoard' function
 		String[] attributes = text.split("%%\n");
 		this.name = attributes[0];
 		this.description = attributes[1];

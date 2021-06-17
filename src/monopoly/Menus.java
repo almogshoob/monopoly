@@ -2,7 +2,7 @@ package monopoly;
 
 import javax.swing.JOptionPane;
 
-public class TestClass {
+public class Menus {
 	static InputDialog frame;
 	static BoardGameBuilder game;
 	
