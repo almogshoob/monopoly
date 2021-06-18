@@ -92,6 +92,8 @@ public class BoardGameBuilder {
 	}
 	
 	public int SetGroup(String old_name, String new_name, String new_color) {
+		if (this.groups.contains(new Group(new_name, new_color)) && old_name != new_name)
+			return -1; // name already exist
 		Group g = this.getGroup(old_name);
 		if (g == null) // no such group
 			return -1;
