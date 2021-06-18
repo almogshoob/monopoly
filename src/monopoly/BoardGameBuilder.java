@@ -108,7 +108,7 @@ public class BoardGameBuilder {
 	}
 	
 	public int deleteSquare(String name) {
-		Square s = findSquareByName(name);
+		Square s = getSquareByName(name);
 		if (s == null)
 			return -1;
 		board.remove(s);
@@ -258,7 +258,7 @@ public class BoardGameBuilder {
 		// TODO: check we have enough squares before start printing
 	}
 	
-	public Square findSquareByName(String name) {
+	public Square getSquareByName(String name) {
 		for (Square s : board) {
 			if (s.getName() == name)
 				return s;

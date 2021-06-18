@@ -43,7 +43,7 @@ public class Test {
 		game.deleteGroup("Stam");
 		game.printSquareByName("Hi");
 		game.deleteSquare("Hi");
-		game.swapSquare(game.findSquareByName("C++"), game.findSquareByName("C"));
+		game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
 		game.printAllSquares();
 		game.exportBoard("CodeBoard");
 		BoardGameBuilder game2 = new BoardGameBuilder();
