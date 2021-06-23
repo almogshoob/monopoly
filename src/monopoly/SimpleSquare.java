@@ -2,6 +2,8 @@ package monopoly;
 
 import java.util.Arrays;
 
+import javax.swing.JOptionPane;
+
 public class SimpleSquare extends Square implements Cardable {
 
 	private int value;
@@ -21,22 +23,12 @@ public class SimpleSquare extends Square implements Cardable {
 		return value;	
 	}
 	public String toString() {
-        return String.format(super.toString() + "Value:\n" + value);
+        return String.format(super.toString() + " | Value: " + value);
     }
 		
 	@Override
 	public void printCard() {
-		// TODO Auto-generated method stub
-		
-		char[] chars = new char[15];
-		Arrays.fill(chars, '_');
-		String shell = new String(chars);
-		
-		System.out.println(shell);
-		System.out.println("Card of "+super.getName());
-		System.out.println(super.toString() + "\n" + this.toString());
-		System.out.println(shell);		
-		
+		JOptionPane.showMessageDialog(null, toString());
 	}
 
 }

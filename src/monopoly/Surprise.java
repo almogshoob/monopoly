@@ -1,5 +1,7 @@
 package monopoly;
 
+import javax.swing.JOptionPane;
+
 public class Surprise implements Cardable {
 	String content;
 	
@@ -12,7 +14,11 @@ public class Surprise implements Cardable {
 	}
 	
 	public void printCard() {
-		System.out.println("Card:");
-		System.out.println(content);
+		JOptionPane.showMessageDialog(null, toString());		
 	}
+	
+	public String toString() {
+        return String.format("Content: "+ this.content );
+	}
+	
 }

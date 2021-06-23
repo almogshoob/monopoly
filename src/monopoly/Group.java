@@ -9,6 +9,11 @@ public class Group {
 		this.name = name;
 		this.color = color;
 	}
+	public Group(Group g) {
+		
+		this.name = g.name;
+		this.color = g.color;
+	}
 	
 	// Getters
 	public String getName() {
@@ -40,5 +45,9 @@ public class Group {
 		Group other = (Group) obj;
 		return this.name.equalsIgnoreCase(other.name); // each group has a unique name
 	}
+	
+   public String toString() {
+        return String.format("Group:\n" + " Name: "+this.name + " | Color: " + this.color);
+   }
 	
 }

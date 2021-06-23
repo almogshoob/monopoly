@@ -1,5 +1,8 @@
 package monopoly;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -7,13 +10,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+
 // TODO:
-// 1. Eilon/Yair: shuffle surprises instead of squares?? If yes, please let me (Omer) know so I can add to menu
-// 2. remove square description? if Yes, please fix in the menu.
-// 3. Eilon/Yair: add log print upon success to each function IN BASE CLASS ONLY, use LOG(Object). for example look at setChosenSize
-// 4. implement nice print of all squares (Print to JOptionPane) and add to menuComponents in [case 7: Review Squares]. this is what we call "printAllSquares"
+// 1. Omer : add shuffleCards to menu	
+//	  Omer: add printAllCards and PrintAllSquares() to menu. - NOTICE: we made printAllCards instead of printSimplSuareCards/printSurpriseCard.. (we change)
+//    (OPTIONAL) print singel card by calling square/cars.printCard() --> due to use of JOptionPane we didnt use polimorphism so much... :\  
+//	  (OPTIONAL) Omer : Smile
+
 // 5. Yair: implement printSimpleSquareCards and printSurpriseCards by iterating all relevant cards and using Cardable.printCard. Print to JOptionPane
 // 6. Think and try edge cases
 
@@ -49,6 +66,7 @@ public class BoardGameBuilder {
 		}
 		else
 			System.out.println("[ERROR] Size should be divisble by 4");
+		
 	}
 	
 	public void setName(String name) {
@@ -68,8 +86,10 @@ public class BoardGameBuilder {
 	
 	public Group getGroup(String name) {
 		for (Group g: this.groups)
-			if (g.getName() == name) // each group has a unique name
+			if (g.getName() == name) { // each group has a unique name
+				LOG(g);
 				return g;
+			}
 		return null;
 	}
 	
@@ -77,6 +97,7 @@ public class BoardGameBuilder {
 		if (this.groups.contains(g)) // contain = by name
 			return -1;
 		this.groups.add(g);
+		LOG(g);
 		return 0;
 	}
 	
@@ -88,6 +109,7 @@ public class BoardGameBuilder {
 			if (s.getGroup() == to_delete)
 				s.setGroup(null);
 		this.groups.remove(to_delete);
+		LOG(to_delete);
 		return 0;
 	}
 	
@@ -99,6 +121,7 @@ public class BoardGameBuilder {
 			return -1;
 		g.setName(new_name);
 		g.setColor(new_color);
+		LOG(g);
 		return 0;
 	}
 	
@@ -112,31 +135,84 @@ public class BoardGameBuilder {
 		if (s == null)
 			return -1;
 		board.remove(s);
+		LOG(s);
 		return 0;
 	}
 	
 	public int swapSquare(Square s1, Square s2) {
 		if (!( board.contains(s2) && board.contains(s1) ))
-			return -1;
-		//Square temp;
-		//int i_1 = board.indexOf(s1);
-		//int i_2 = board.indexOf(s2);
-		//temp = board.get(i_1);
-		//board.add(i_1, s2);
-		//board.remove(i_1 +1);
-		//board.add(i_2,temp);
-		//board.remove(i_2 +1);
-		
+			return -1;	
 		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
 		return 0;
 	}
 	
 	public void shuffleSquares() {
-		Collections.shuffle(board);
+		Collections.shuffle(this.board);
+	}
+
+	public void shuffleCards() {
+		Iterator it = surprise_cards.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry pair = (Map.Entry)it.next();
+	        Collections.shuffle((List<?>) pair.getValue());
+	    }
+		
 	}
 	
+	public void PrintAllCards() {
+		int hight = 0; //hight of dialog box
+		int max_width = 0;  //width of dialog box
+		String old_output; 
+		String output = ""; //holding the string to be send to JOptionPane
+		ArrayList<Cardable> card_array;
+		Iterator it = surprise_cards.entrySet().iterator(); //iterating the HashMap
+	    while (it.hasNext()) { //IF NOT EMPTY 
+	        Map.Entry pair = (Map.Entry)it.next(); 
+	        card_array = (ArrayList<Cardable>) pair.getValue(); //holding the array with cards.
+	        output += "\nCards of: " + pair.getKey()+"\n"; 
+			for(int i = 0; i < card_array.size() ; i++){
+				old_output = output; //SAVING OLD LENGTH
+				output += "Card number " + (i+1) + ". "+ card_array.get(i).toString() + "\n";
+				if ( (output.length() - old_output.length() ) > max_width ) //if current length is longer, increase max_width. 
+					max_width = output.length() - old_output.length();
+			}
+			hight += card_array.size(); //increase hight.			        
+	    }
+	    
+	    output += "\n\nSquare Cards: \n";	    
+	    for (Square s : this.board) { //taking care of SimpleSquares.
+	    	if (s instanceof SimpleSquare) { 
+	    		 old_output = output;
+	    		
+	    		 output += s.toString() + "\n";	    
+	    		 if ( (output.length() - old_output.length() ) > max_width ) 
+						max_width = output.length() - old_output.length();
+	    		 hight++;
+	    	}
+	    }
+	    max_width += 150;
+	           
+	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
+	    JOptionPane.showMessageDialog(null, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
+	}
+		
 	public void printAllSquares() {
-		//TODO
+		int hight = 0; // high of dialog box
+		int max_width = 0;  //width of dialog box
+		String old_output; 
+		String output = ""; //holding the string to be send to JOptionPane
+		output += "List of all Squares: \n";	    
+		for (Square s : this.board) { //taking care of SimpleSquares.
+	    		 old_output = output;
+	    		 output += s.toString() + "\n";	    
+	    		 if ( (output.length() - old_output.length() ) > max_width ) 
+						max_width = output.length() - old_output.length();
+	    		 hight++;
+	    	}
+	    max_width += 150;
+	           
+	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
+	    JOptionPane.showMessageDialog(null, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
 	}
 	
 	public int exportBoard(String file_name) {
@@ -254,14 +330,74 @@ public class BoardGameBuilder {
 	}
 	
 	public void printBoard() {
-		// Squares will be printed by order and according to chosen_size
-		// TODO: check we have enough squares before start printing
+		//this was one of the more chalenging methoods.
+		//we are printing the game's board.
+		//in order to fit the "monopoly" kind of a board, We will print the board in a circular shape when the progress is clockwise.
+		//The order of the squares will be printed according to the order of their absorption.
+		//In order to recieve valid output we are demending a valid chose_size --> Divided by 4.
+		
+		int line_length = this.chosen_size/4 + 1; //making a square board out of our size.
+		int board_idx = 0, array_end_idx = 0, array_len = board.size(); //indexs for prints.
+		if (  ( (chosen_size % 4) != 0) || (chosen_size != board.size()) ){
+			UIManager.put("OptionPane.minimumSize",new Dimension(100 ,50));  //PRINT WITH JOptionPane
+	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENTIONS!", "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
+	        return;
+		}
+		
+		JPanel pane = new JPanel(); //initializing JPane class to work with.
+		Square s =null;
+		JLabel label=null;
+	
+		pane.setLayout(new GridLayout(0, line_length, 0, 0));
+        for (int i = 0; i < line_length; i++) {
+            for (int j = 0; j < line_length; j++) { // 2d for loop in order to go on whole 2d board matrix
+            	if ( ( (i > 0) && (i < line_length -1)) && ( (j >0) && (j < (line_length -1) ))){      	//in case that we are in the middle of the board.
+	                label = new JLabel(" ");
+	                label.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
+	           	}
+            	else if (i==0){ //creating first line of the board. upper line.
+            		s = this.board.get(board_idx);
+            		label = new JLabel(" "+ s.getName());
+                  	board_idx++;
+            	}
+            	else if (i == (line_length-1)) { //creating last line of the board, buttom line.
+            		s = this.board.get((array_len-1) - array_end_idx);
+	            	label = new JLabel(" "+ s.getName());
+	            	array_end_idx ++;          			
+            	}
+            	else{
+        			if ( board_idx > (line_length-1) ) { //in case that we reached the more interesting park of the board, left and right lines.
+           				if (j == 0) {
+        					s = this.board.get((array_len-1) - array_end_idx); // print from the end of the array
+        	            	label = new JLabel(" "+ s.getName());
+        	            	array_end_idx ++;
+        				}
+        				else if (j == (line_length-1)){ // print from the end of the array
+        					s = this.board.get(board_idx);
+        	            	label = new JLabel(" "+ s.getName());
+        	            	board_idx++;
+        				}     	            	
+    	           	}	       				
+        		}
+            	if(s instanceof SimpleSquare) //choosing color by  kind of square.
+            		label.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+            	else
+            		label.setBorder(BorderFactory.createLineBorder(Color.RED));
+            	pane.add(label);
+        		
+            }
+        }  
+        
+        UIManager.put("OptionPane.minimumSize",new Dimension(400 ,400));  //PRINT WITH JOptionPane
+        JOptionPane.showMessageDialog(new JFrame(), pane, "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	public Square getSquareByName(String name) {
 		for (Square s : board) {
-			if (s.getName() == name)
+			if (s.getName() == name) {
+				LOG(s);
 				return s;
+			}
 		}
 		System.out.println("[ERROR] couldn't find " + name);
 		return null;
@@ -277,6 +413,7 @@ public class BoardGameBuilder {
 			temp = new ArrayList<Surprise>();
 		temp.add(s);
 		surprise_cards.put(key, temp);
+		LOG(s);
 	}
 
 	public static void LOG(Object o) {
