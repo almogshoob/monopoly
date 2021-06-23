@@ -26,8 +26,9 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 // TODO:
-// 1. Omer : add shuffleCards to menu	
+// 1. Omer: add shuffleCards to menu	
 //	  Omer: add printAllCards and PrintAllSquares() to menu. - NOTICE: we made printAllCards instead of printSimplSuareCards/printSurpriseCard.. (we change)
+//	  Omer: please limit the user input of square name and group name to 15 chars. 	
 //    (OPTIONAL) print singel card by calling square/cars.printCard() --> due to use of JOptionPane we didnt use polimorphism so much... :\  
 //	  (OPTIONAL) Omer : Smile
 
@@ -338,15 +339,21 @@ public class BoardGameBuilder {
 		
 		int line_length = this.chosen_size/4 + 1; //making a square board out of our size.
 		int board_idx = 0, array_end_idx = 0, array_len = board.size(); //indexes for prints.
-		if (  ( (chosen_size % 4) != 0) || (chosen_size != board.size()) ){
-			UIManager.put("OptionPane.minimumSize",new Dimension(100 ,50));  //PRINT WITH JOptionPane
-	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENSIONS!", "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
+		if ( (chosen_size % 4) != 0){
+			UIManager.put("OptionPane.minimumSize",new Dimension(200 ,50));  //PRINT WITH JOptionPane
+	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD SIZE! please make sure that your dimentions are multiply of 4.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
+	        return;
+		}
+		if (chosen_size != board.size()){
+			UIManager.put("OptionPane.minimumSize",new Dimension(150 ,50));  //PRINT WITH JOptionPane
+	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENSIONS! Number of squares is not matching Board size.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
 	        return;
 		}
 		
 		JPanel pane = new JPanel(); //initializing JPane class to work with.
 		Square s =null;
 		JLabel label=null;
+		int black =0;
 	
 		pane.setLayout(new GridLayout(0, line_length, 0, 0));
         for (int i = 0; i < line_length; i++) {
@@ -354,41 +361,46 @@ public class BoardGameBuilder {
             	if ( ( (i > 0) && (i < line_length -1)) && ( (j >0) && (j < (line_length -1) ))){      	//in case that we are in the middle of the board.
 	                label = new JLabel(" ");
 	                label.setBorder(BorderFactory.createLineBorder(Color.BLACK)); 
+	                black = 1;
 	           	}
             	else if (i==0){ //creating first line of the board. upper line.
             		s = this.board.get(board_idx);
-            		label = new JLabel(" "+ s.getName());
-                  	board_idx++;
+	                board_idx++;
             	}
             	else if (i == (line_length-1)) { //creating last line of the board, buttom line.
             		s = this.board.get((array_len-1) - array_end_idx);
-	            	label = new JLabel(" "+ s.getName());
 	            	array_end_idx ++;          			
             	}
             	else{
         			if ( board_idx > (line_length-1) ) { //in case that we reached the more interesting park of the board, left and right lines.
            				if (j == 0) {
         					s = this.board.get((array_len-1) - array_end_idx); // print from the end of the array
-        	            	label = new JLabel(" "+ s.getName());
         	            	array_end_idx ++;
         				}
         				else if (j == (line_length-1)){ // print from the end of the array
         					s = this.board.get(board_idx);
-        	            	label = new JLabel(" "+ s.getName());
         	            	board_idx++;
         				}     	            	
     	           	}	       				
         		}
-            	if(s instanceof SimpleSquare) //choosing color by  kind of square.
-            		label.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-            	else
-            		label.setBorder(BorderFactory.createLineBorder(Color.RED));
+                 
+            	if (black == 0) {
+            		if(s.getGroup() != null) 
+                		label = new JLabel( " "+s.getGroup().getName()+": "+ s.getName());
+            		else
+            			label = new JLabel(" " + s.getName());    
+           	
+	            	if(s instanceof SimpleSquare) //choosing color by  kind of square.
+	            		label.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+	            	else
+	            		label.setBorder(BorderFactory.createLineBorder(Color.RED));       		
+            	}
             	pane.add(label);
-        		
+            	black = 0;
             }
         }  
         
-        UIManager.put("OptionPane.minimumSize",new Dimension(400 ,400));  //PRINT WITH JOptionPane
+        UIManager.put("OptionPane.minimumSize",new Dimension(1000 ,1000));  //PRINT WITH JOptionPane
         JOptionPane.showMessageDialog(new JFrame(), pane, "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
 	}
 	

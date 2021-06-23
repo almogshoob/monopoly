@@ -33,10 +33,10 @@ public class Test {
 		
 		
 		// add squares
-		//game.AddSquare(new SpecialSquare("Start", "", null, "Collect 200 bits"));
+		game.AddSquare(new SpecialSquare("Start", "", null, "Collect 200 bits"));
 		game.AddSquare(new SimpleSquare("Python", "easy peasy", game.getGroup("High Level"), 5*1024));
 		game.AddSquare(new SimpleSquare("Java", "for android app", game.getGroup("High Level"), 4*1024));
-		game.AddSquare(new SimpleSquare("C#", "for windows app", game.getGroup("Highl Level"), 4*1024));
+		game.AddSquare(new SimpleSquare("C#", "for windows app", game.getGroup("High Level"), 4*1024));
 		game.AddSquare(new SimpleSquare("C", "remember malloc?", game.getGroup("Low Level"), 2*1024));
 		game.AddSquare(new SimpleSquare("C++", "here go the OOP", game.getGroup("Low Level"), 3*1024));
 		game.AddSquare(new SpecialSquare("Error", "I warned you!", game.getGroup("Cards"), "Take an Error card"));
@@ -52,12 +52,12 @@ public class Test {
 		
 		// some more function to test
 		game.addGroup(new Group("Stam", "Black"));
-		//game.SetGroup("Stam", "Stam", "White");
+		game.SetGroup("Stam", "Stam", "White");
 		game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
-		//game.deleteGroup("Stam");
+		game.deleteGroup("Stam");
 		game.printSquareByName("Hi");
-		//game.deleteSquare("Hi");
-		//game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
+		game.deleteSquare("Hi");
+		game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
 		game.exportBoard("CodeBoard");
 		BoardGameBuilder game2 = new BoardGameBuilder();
 		//game.PrintAllCards();
@@ -67,8 +67,8 @@ public class Test {
 		//game.printBoard();
 		//game.deleteSquare("Hi");
 		//game.printBoard();
-		
-		//game.setChosenSize(8);
+		game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
+		game.printBoard();
 		//game.printBoard();
 		//game2.importBoard("CodeBoard");
 		//game2.printBoard();
