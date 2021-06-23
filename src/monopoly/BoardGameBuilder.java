@@ -160,7 +160,7 @@ public class BoardGameBuilder {
 	}
 	
 	public void PrintAllCards() {
-		int hight = 0; //hight of dialog box
+		int hight = 0; //height of dialog box
 		int max_width = 0;  //width of dialog box
 		String old_output; 
 		String output = ""; //holding the string to be send to JOptionPane
@@ -176,7 +176,7 @@ public class BoardGameBuilder {
 				if ( (output.length() - old_output.length() ) > max_width ) //if current length is longer, increase max_width. 
 					max_width = output.length() - old_output.length();
 			}
-			hight += card_array.size(); //increase hight.			        
+			hight += card_array.size(); //increase height.			        
 	    }
 	    
 	    output += "\n\nSquare Cards: \n";	    
@@ -330,17 +330,17 @@ public class BoardGameBuilder {
 	}
 	
 	public void printBoard() {
-		//this was one of the more chalenging methoods.
+		//this was one of the more challenging methods.
 		//we are printing the game's board.
 		//in order to fit the "monopoly" kind of a board, We will print the board in a circular shape when the progress is clockwise.
 		//The order of the squares will be printed according to the order of their absorption.
-		//In order to recieve valid output we are demending a valid chose_size --> Divided by 4.
+		//In order to receive valid output we are demanding a valid chose_size --> Divided by 4.
 		
 		int line_length = this.chosen_size/4 + 1; //making a square board out of our size.
-		int board_idx = 0, array_end_idx = 0, array_len = board.size(); //indexs for prints.
+		int board_idx = 0, array_end_idx = 0, array_len = board.size(); //indexes for prints.
 		if (  ( (chosen_size % 4) != 0) || (chosen_size != board.size()) ){
 			UIManager.put("OptionPane.minimumSize",new Dimension(100 ,50));  //PRINT WITH JOptionPane
-	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENTIONS!", "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
+	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENSIONS!", "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
 	        return;
 		}
 		

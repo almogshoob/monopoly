@@ -63,10 +63,10 @@ public class Test {
 		//game.PrintAllCards();
 		//game.printAllSquares();
 		game.printBoard();
-		game.shuffleSquares();
-		game.printBoard();
-		game.deleteSquare("Hi");
-		game.printBoard();
+		//game.shuffleSquares();
+		//game.printBoard();
+		//game.deleteSquare("Hi");
+		//game.printBoard();
 		
 		//game.setChosenSize(8);
 		//game.printBoard();

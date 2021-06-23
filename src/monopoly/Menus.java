@@ -159,7 +159,7 @@ public class Menus {
 			game.printBoard();
 			break;
 		case 1: // Print Simple Square Cards
-			//game.printSimpleSquareCards();
+			game.PrintAllCards();
 			// TODO: implement
 			break;
 		case 2: // Print All Surprise Cards
