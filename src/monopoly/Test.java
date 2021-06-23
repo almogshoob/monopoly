@@ -59,7 +59,7 @@ public class Test {
 		game.deleteSquare("Hi");
 		game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
 		game.exportBoard("CodeBoard");
-		BoardGameBuilder game2 = new BoardGameBuilder();
+		//BoardGameBuilder game2 = new BoardGameBuilder();
 		//game.PrintAllCards();
 		//game.printAllSquares();
 		game.printBoard();
@@ -67,8 +67,8 @@ public class Test {
 		//game.printBoard();
 		//game.deleteSquare("Hi");
 		//game.printBoard();
-		game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
-		game.printBoard();
+		//game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
+		//game.printBoard();
 		//game.printBoard();
 		//game2.importBoard("CodeBoard");
 		//game2.printBoard();

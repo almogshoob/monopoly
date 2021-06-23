@@ -52,7 +52,7 @@ public class BoardGameBuilder {
 	public BoardGameBuilder() {
 		name = "Monopoly";
 		description = "A wonderful game!";
-		instructions = 	"a. Roll the dice/n" +
+		instructions = 	"a. Roll the dice\n" +
 						"b. Move according to dice";
 		chosen_size = 4;
 		board = new ArrayList<Square>();
@@ -86,11 +86,11 @@ public class BoardGameBuilder {
 	}
 	
 	public Group getGroup(String name) {
-		for (Group g: this.groups)
-			if (g.getName() == name) { // each group has a unique name
+		for (Group g: this.groups) {
+			if (g.getName().equals(name)) { // each group has a unique name
 				LOG(g);
 				return g;
-			}
+			}}
 		return null;
 	}
 	
@@ -236,7 +236,7 @@ public class BoardGameBuilder {
         // '##\n' between object in list/map
         // '@@' as a ',' between object properties
         String text = "";
-        // namen description, instruction, chosen_size
+        // name description, instruction, chosen_size
         text = text + this.name + "%%\n" + this.description + "%%\n" + this.instructions + "%%\n";
         text = text + String.valueOf(this.chosen_size) + "%%\n";
         // groups
@@ -247,11 +247,14 @@ public class BoardGameBuilder {
         for (Square s: board) {
         	String class_name = s.getClass().getName();
         	text = text + class_name + "@@";
-        	if (class_name == "SimpleSquare")
+        	if (class_name == "monopoly.SimpleSquare")
         		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
         	else // SpecialSquare
         		text = text + ((SpecialSquare)s).getAction() + "@@";
-        	text = text + s.getName() + "@@" + s.getDescription() + "@@" + s.getGroup().getName();
+        	if(s.getGroup() != null)
+        		text = text + s.getName() + "@@" + s.getDescription() + "@@" + s.getGroup().getName();
+        	else
+        		text = text + s.getName() + "@@" + s.getDescription() + "@@" + "^^"; // "^^" represent null value
         	text += "##\n";
         }
         text = text + "%%\n";
@@ -286,10 +289,10 @@ public class BoardGameBuilder {
             File board_file = new File(file_name + ".txt");
             Scanner myReader = new Scanner(board_file);
             while (myReader.hasNextLine()) {
-                text += myReader.nextLine();
+                text = text + myReader.nextLine() + "\n";
             }
             myReader.close();
-            System.out.println("[ERROR] Read Successfully!");
+            System.out.println("Read Successfully!");
         } catch (FileNotFoundException e) {
             System.out.println("[ERROR] File not found!");
             e.printStackTrace();
@@ -298,6 +301,7 @@ public class BoardGameBuilder {
 		// split text and set BoardGameBuilder attributes
 		// exactly as we explained in 'exportBoard' function
 		String[] attributes = text.split("%%\n");
+		System.out.println(attributes[4]);
 		this.name = attributes[0];
 		this.description = attributes[1];
 		this.instructions = attributes[2];
@@ -319,14 +323,15 @@ public class BoardGameBuilder {
 		}
 		this.board = new ArrayList<Square>();
 		String[] squares = attributes[5].split("##\n");
+		
 		for (String s: squares) {
 			String[] info = s.split("@@"); // info = class, value/action, name, description, group
 			String class_name = info[0];
 			Group g = this.getGroup(info[4]);
 			if (class_name == "SimpleSquare")
-				this.board.add(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
+				this.AddSquare(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
 			else // SpecialSquare
-				this.board.add(new SpecialSquare(info[2], info[3], g, info[1]));
+				this.AddSquare(new SpecialSquare(info[2], info[3], g, info[1]));
 		}
 	}
 	
