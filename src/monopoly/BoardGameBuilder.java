@@ -26,13 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 // TODO:
-// 1. Omer: add shuffleCards to menu	
-//	  Omer: add printAllCards and PrintAllSquares() to menu. - NOTICE: we made printAllCards instead of printSimplSuareCards/printSurpriseCard.. (we change)
-//	  Omer: please limit the user input of square name and group name to 15 chars. 	
-//    (OPTIONAL) print singel card by calling square/cars.printCard() --> due to use of JOptionPane we didnt use polimorphism so much... :\  
-//	  (OPTIONAL) Omer : Smile
-
-// 5. Yair: implement printSimpleSquareCards and printSurpriseCards by iterating all relevant cards and using Cardable.printCard. Print to JOptionPane
 // 6. Think and try edge cases
 
 // Coding style:
@@ -160,7 +153,7 @@ public class BoardGameBuilder {
 		
 	}
 	
-	public void PrintAllCards() {
+	public void PrintAllCards(InputDialog frame) {
 		int hight = 0; //height of dialog box
 		int max_width = 0;  //width of dialog box
 		String old_output; 
@@ -194,10 +187,10 @@ public class BoardGameBuilder {
 	    max_width += 150;
 	           
 	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
-	    JOptionPane.showMessageDialog(null, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
+	    JOptionPane.showMessageDialog(frame, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
 	}
 		
-	public void printAllSquares() {
+	public void printAllSquares(InputDialog frame) {
 		int hight = 0; // high of dialog box
 		int max_width = 0;  //width of dialog box
 		String old_output; 
@@ -213,14 +206,14 @@ public class BoardGameBuilder {
 	    max_width += 150;
 	           
 	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
-	    JOptionPane.showMessageDialog(null, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
+	    JOptionPane.showMessageDialog(frame, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
 	}
 	
 	public int exportBoard(String file_name) {
 		File board_file = null;
 		// open file
         try {
-        	board_file = new File(file_name + ".txt");
+        	board_file = new File(file_name);
             if (!board_file.createNewFile()) {
                 System.out.println("[ERROR] File already exists!");
                 return -1;
@@ -286,7 +279,7 @@ public class BoardGameBuilder {
 		//read from file
 		String text = "";
 		try {
-            File board_file = new File(file_name + ".txt");
+            File board_file = new File(file_name);
             Scanner myReader = new Scanner(board_file);
             while (myReader.hasNextLine()) {
                 text = text + myReader.nextLine() + "\n";
@@ -335,7 +328,7 @@ public class BoardGameBuilder {
 		}
 	}
 	
-	public void printBoard() {
+	public void printBoard(InputDialog frame) {
 		//this was one of the more challenging methods.
 		//we are printing the game's board.
 		//in order to fit the "monopoly" kind of a board, We will print the board in a circular shape when the progress is clockwise.
@@ -346,12 +339,12 @@ public class BoardGameBuilder {
 		int board_idx = 0, array_end_idx = 0, array_len = board.size(); //indexes for prints.
 		if ( (chosen_size % 4) != 0){
 			UIManager.put("OptionPane.minimumSize",new Dimension(200 ,50));  //PRINT WITH JOptionPane
-	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD SIZE! please make sure that your dimentions are multiply of 4.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
+	        JOptionPane.showMessageDialog(frame, "WRONG BOARD SIZE! please make sure that your dimentions are multiply of 4.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
 	        return;
 		}
 		if (chosen_size != board.size()){
 			UIManager.put("OptionPane.minimumSize",new Dimension(150 ,50));  //PRINT WITH JOptionPane
-	        JOptionPane.showMessageDialog(new JFrame(), "WRONG BOARD DIMENSIONS! Number of squares is not matching Board size.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
+	        JOptionPane.showMessageDialog(frame, "WRONG BOARD DIMENSIONS! Number of squares is not matching Board size.", "GAME BOARD ERROR", JOptionPane.PLAIN_MESSAGE);
 	        return;
 		}
 		
@@ -405,8 +398,8 @@ public class BoardGameBuilder {
             }
         }  
         
-        UIManager.put("OptionPane.minimumSize",new Dimension(1000 ,1000));  //PRINT WITH JOptionPane
-        JOptionPane.showMessageDialog(new JFrame(), pane, "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
+        UIManager.put("OptionPane.minimumSize",new Dimension(600 ,600));  //PRINT WITH JOptionPane
+        JOptionPane.showMessageDialog(frame, pane, "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	public Square getSquareByName(String name) {

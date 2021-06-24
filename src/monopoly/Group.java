@@ -6,13 +6,11 @@ public class Group {
 	private String color;
 	
 	public Group(String name, String color) {
-		this.name = name;
+		setName(name);
 		this.color = color;
 	}
 	public Group(Group g) {
-		
-		this.name = g.name;
-		this.color = g.color;
+		this(g.name, g.color);
 	}
 	
 	// Getters
@@ -26,7 +24,10 @@ public class Group {
 	
 	// Setters
 	public void setName(String name) {
-		this.name = name;
+		if (name.length()<=15)
+			this.name=name;
+		else
+			this.name=name.substring(0,15);
 	}
 	
 	public void setColor(String color) {

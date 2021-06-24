@@ -62,7 +62,7 @@ public class Test {
 		//BoardGameBuilder game2 = new BoardGameBuilder();
 		//game.PrintAllCards();
 		//game.printAllSquares();
-		game.printBoard();
+		game.printBoard(new InputDialog());
 		//game.shuffleSquares();
 		//game.printBoard();
 		//game.deleteSquare("Hi");

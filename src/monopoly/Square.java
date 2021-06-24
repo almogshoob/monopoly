@@ -9,18 +9,26 @@ public abstract class Square {
 	
 	//CTOR
 	public Square(String name, String description, Group group) {
-		this.name = name;
-		this.description = description;
+		setName(name);
+		this.description = description.isEmpty()? "None" : description;
 		this.group = group;	
 	}
 	public Square() {
-		this.name = "empty";
+		setName("empty");
 		this.description = "an empty squere" ;
 		this.group = null;	
 	}
 	public Square(Square other) {
         this(other.getName(), other.getDescription(),other.getGroup());
     }
+	
+	// Setters
+	public void setName(String name) {
+		if (name.length()<=15)
+			this.name=name;
+		else
+			this.name=name.substring(0,15);
+	}
 	
 	// Getters
 	public String getName() {	

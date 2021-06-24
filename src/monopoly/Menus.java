@@ -18,11 +18,14 @@ public class Menus {
     	return false;
     }
 	
-    // TODO: maybe check for input correctness
     private static String getNominalAnswer(String message) {
     	String ans = JOptionPane.showInputDialog(frame, message);
     	System.out.println("[LOG] " + ans);
     	return ans;
+    }
+    
+    private static void putMessage(String message) {
+    	JOptionPane.showMessageDialog(frame, message);
     }
     
     private static int getAnswerIdx(String message, String title, String [] options){
@@ -84,6 +87,7 @@ public class Menus {
 	        	"Add Surprise",
 	        	"Swap Squares",
 	        	"Shuffle Squares",
+	        	"Shuffle All Cards",
 	        	"Review Squares",
 	        	"Export Components",
 	        	"Import Components"};
@@ -92,14 +96,23 @@ public class Menus {
 			switch (ans) {
 			case 0: // Add Simple Square
 				s1 = getNominalAnswer("Square Name:");
-				s2 = getNominalAnswer("Square Description:");
+				if (s1.isEmpty()) {
+					putMessage("Please Enter Valid Name");
+					break;
+				}
+				s2 = getNominalAnswer("Square Description (leave blank for 'None'):");
 				s3 = getNominalAnswer("Add to Group? (leave blank for null group)");
 				g = game.getGroup(s3);
-				n = Integer.parseInt(getNominalAnswer("Value:"));
+				s4 = getNominalAnswer("Value (leave blank for 100):");
+				n = (s4.isEmpty()? 100 : Integer.parseInt(s4));
 				game.AddSquare(new SimpleSquare(s1,s2,g,n));
 				break;
 			case 1: // Add Special Square
 				s1 = getNominalAnswer("Square Name:");
+				if (s1 == null) {
+					putMessage("Please Enter Valid Name");
+					break;
+				}
 				s2 = getNominalAnswer("Square Description:");
 				s3 = getNominalAnswer("Add to Group? (leave blank for null group)");
 				g = game.getGroup(s3);
@@ -124,18 +137,26 @@ public class Menus {
 				s2 = getNominalAnswer("Content:");
 				game.addSurprise(s1, new Surprise(s2));
 				break;
-			case 6: // Shuffle Squares
+			case 6: // Swap Squares
+				s1 = getNominalAnswer("Square 1 Name:");
+				s2 = getNominalAnswer("Square 2 Name:");
+				if (game.getSquareByName(s1) != null && game.getSquareByName(s2) != null)
+					game.swapSquare(game.getSquareByName(s1), game.getSquareByName(s2));
+				break;
+			case 7: // Shuffle Squares
 				game.shuffleSquares();
 				break;
-			case 7: // Review Squares
-				//game.setInstructions();
-				// TODO: implement nice print of all squares (just a list in OptionPane)
+			case 8: // Shuffle All Cards
+				game.shuffleCards();
 				break;
-			case 8: // Export Squares
+			case 9: // Review Squares
+				game.printAllSquares(frame);
+				break;
+			case 10: // Export Squares
 				s1 = getNominalAnswer("Export To File Name:");
 				game.exportBoard(s1);
 				break;
-			case 9: // Import Squares
+			case 11: // Import Squares
 				s1 = getNominalAnswer("Import From File Name:");
 				if (getYesNoAnswer("All your Components will be deleted, Are you sure you wish to continue?"))
 					game.importBoard(s1);
@@ -150,21 +171,15 @@ public class Menus {
     private static void menuPrints(){
 		String[] options = {
 	        	"Print Board",
-	        	"Print All Simple Square Cards",
-	        	"Print All Surprise Cards"};
+	        	"Print All Cards"};
 		
 		int ans = getAnswerIdx("Settings:", "Settings",options);
 		switch (ans) {
 		case 0: // Print Board
-			game.printBoard();
+			game.printBoard(frame);
 			break;
-		case 1: // Print Simple Square Cards
-			game.PrintAllCards();
-			// TODO: implement
-			break;
-		case 2: // Print All Surprise Cards
-			//game.printSurpriseCards();
-			// TODO: implement
+		case 1: // Print All Cards
+			game.PrintAllCards(frame);
 			break;
 		default:
 			break;
