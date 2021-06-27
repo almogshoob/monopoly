@@ -23,6 +23,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 // TODO:
@@ -137,11 +139,13 @@ public class BoardGameBuilder {
 		if (!( board.contains(s2) && board.contains(s1) ))
 			return -1;	
 		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
+		LOG(s1);
 		return 0;
 	}
 	
 	public void shuffleSquares() {
 		Collections.shuffle(this.board);
+		LOG("shuffle Squares");
 	}
 
 	public void shuffleCards() {
@@ -150,11 +154,10 @@ public class BoardGameBuilder {
 	        Map.Entry pair = (Map.Entry)it.next();
 	        Collections.shuffle((List<?>) pair.getValue());
 	    }
-		
+	    LOG("shuffle Cards");		
 	}
 	
 	public void PrintAllCards(InputDialog frame) {
-		int hight = 0; //height of dialog box
 		int max_width = 0;  //width of dialog box
 		String old_output; 
 		String output = ""; //holding the string to be send to JOptionPane
@@ -170,7 +173,6 @@ public class BoardGameBuilder {
 				if ( (output.length() - old_output.length() ) > max_width ) //if current length is longer, increase max_width. 
 					max_width = output.length() - old_output.length();
 			}
-			hight += card_array.size(); //increase height.			        
 	    }
 	    
 	    output += "\n\nSquare Cards: \n";	    
@@ -181,17 +183,18 @@ public class BoardGameBuilder {
 	    		 output += s.toString() + "\n";	    
 	    		 if ( (output.length() - old_output.length() ) > max_width ) 
 						max_width = output.length() - old_output.length();
-	    		 hight++;
 	    	}
 	    }
-	    max_width += 150;
-	           
-	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
-	    JOptionPane.showMessageDialog(frame, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
+	    max_width = max_width - 50;	    
+	    JTextArea textArea = new JTextArea(output, 20, max_width);
+	    
+	    JScrollPane sp = new JScrollPane(textArea);
+	    sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	    JOptionPane.showMessageDialog(frame, sp, "Cards list", JOptionPane.PLAIN_MESSAGE);	    //PRINT WITH JOptionPane
+	    	
 	}
 		
 	public void printAllSquares(InputDialog frame) {
-		int hight = 0; // high of dialog box
 		int max_width = 0;  //width of dialog box
 		String old_output; 
 		String output = ""; //holding the string to be send to JOptionPane
@@ -201,12 +204,13 @@ public class BoardGameBuilder {
 	    		 output += s.toString() + "\n";	    
 	    		 if ( (output.length() - old_output.length() ) > max_width ) 
 						max_width = output.length() - old_output.length();
-	    		 hight++;
 	    	}
-	    max_width += 150;
-	           
-	    UIManager.put("OptionPane.minimumSize",new Dimension(max_width ,hight));  //PRINT WITH JOptionPane
-	    JOptionPane.showMessageDialog(frame, output, "Cards list", JOptionPane.PLAIN_MESSAGE);		
+		max_width = max_width - 30;	    
+	    JTextArea textArea = new JTextArea(output, 20, max_width);
+	    
+	    JScrollPane sp = new JScrollPane(textArea);
+	    sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	    JOptionPane.showMessageDialog(frame, sp, "Squares list", JOptionPane.PLAIN_MESSAGE);	    //PRINT WITH JOptionPane
 	}
 	
 	public int exportBoard(String file_name) {
@@ -240,7 +244,7 @@ public class BoardGameBuilder {
         for (Square s: board) {
         	String class_name = s.getClass().getName();
         	text = text + class_name + "@@";
-        	if (class_name == "monopoly.SimpleSquare")
+        	if (class_name.equals("monopoly.SimpleSquare"))
         		text = text + String.valueOf(((SimpleSquare)s).getValue()) + "@@";
         	else // SpecialSquare
         		text = text + ((SpecialSquare)s).getAction() + "@@";
@@ -321,7 +325,7 @@ public class BoardGameBuilder {
 			String[] info = s.split("@@"); // info = class, value/action, name, description, group
 			String class_name = info[0];
 			Group g = this.getGroup(info[4]);
-			if (class_name == "SimpleSquare")
+			if (class_name.equals("monopoly.SimpleSquare"))
 				this.AddSquare(new SimpleSquare(info[2], info[3], g, Integer.parseInt(info[1])));
 			else // SpecialSquare
 				this.AddSquare(new SpecialSquare(info[2], info[3], g, info[1]));
@@ -400,6 +404,7 @@ public class BoardGameBuilder {
         
         UIManager.put("OptionPane.minimumSize",new Dimension(600 ,600));  //PRINT WITH JOptionPane
         JOptionPane.showMessageDialog(frame, pane, "GAME BOARD", JOptionPane.PLAIN_MESSAGE);
+        LOG(board);
 	}
 	
 	public Square getSquareByName(String name) {

@@ -58,20 +58,27 @@ public class Test {
 		game.printSquareByName("Hi");
 		game.deleteSquare("Hi");
 		game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
+		
 		game.exportBoard("CodeBoard");
-		//BoardGameBuilder game2 = new BoardGameBuilder();
-		//game.PrintAllCards();
-		//game.printAllSquares();
-		game.printBoard(new InputDialog());
-		//game.shuffleSquares();
-		//game.printBoard();
-		//game.deleteSquare("Hi");
-		//game.printBoard();
-		//game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
-		//game.printBoard();
-		//game.printBoard();
-		//game2.importBoard("CodeBoard");
-		//game2.printBoard();
+		BoardGameBuilder game2 = new BoardGameBuilder();	
+		game2.importBoard("CodeBoard");
+		game2.printBoard(null);
+		
+		game.PrintAllCards(null);
+		game.printAllSquares(null);
+		game.printBoard(null);
+		game.shuffleSquares();
+		game.printBoard(null);
+		
+		game.deleteSquare("C++");
+		game.printBoard(null);
+		game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
+		game.printBoard(null);
+		
+		game.PrintAllCards(null);
+		game.printAllSquares(null);
+		
+		
 	}
 
 }
