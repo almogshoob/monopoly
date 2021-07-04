@@ -15,7 +15,7 @@ public abstract class Square {
 	}
 	public Square() {
 		setName("empty");
-		this.description = "an empty squere" ;
+		this.description = "an empty square" ;
 		this.group = null;	
 	}
 	public Square(Square other) {
@@ -45,7 +45,6 @@ public abstract class Square {
 		this.group = g;
 	}
 	
-	//TODO
 	public void printSquare() {
 		
 	//implement smart print

@@ -6,10 +6,12 @@ public class Menus {
 	static InputDialog frame;
 	static BoardGameBuilder game;
 	
+	// log actions so we can keep track
 	public static void LOG(Object o) {
 		System.out.println("[LOG] <" + Thread.currentThread().getStackTrace()[2].getMethodName() + "> " + o.toString());
 	}
 	
+	// present yes no question and get answer
     private static Boolean getYesNoAnswer(String message) {
     	int ans = JOptionPane.showConfirmDialog(frame, message, null, JOptionPane.YES_NO_OPTION);
     	System.out.println("[LOG] " + ((ans == JOptionPane.YES_OPTION)? "True" : "False"));
@@ -18,16 +20,19 @@ public class Menus {
     	return false;
     }
 	
+    // present question and get nominal answer
     private static String getNominalAnswer(String message) {
     	String ans = JOptionPane.showInputDialog(frame, message);
     	System.out.println("[LOG] " + ans);
     	return ans;
     }
     
+    // print message
     private static void putMessage(String message) {
     	JOptionPane.showMessageDialog(frame, message);
     }
     
+    // print message and get index of answer
     private static int getAnswerIdx(String message, String title, String [] options){
     	String ans = (String) JOptionPane.showInputDialog(frame, message, title, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
     	System.out.println("[LOG] " + ans);
@@ -38,6 +43,7 @@ public class Menus {
     	return -1;
     }
     
+    // menu for settings of game
     private static void menuSettings(){
 		Boolean exit = false;
 		String s;
@@ -73,6 +79,7 @@ public class Menus {
 		}
     }
     
+    // menu for components (e.g. squares/groups/etc.)
     private static void menuComponents(){
 		Boolean exit = false;
 		String s1, s2, s3, s4;
@@ -168,6 +175,7 @@ public class Menus {
 		}
     }
    
+    // menu for prints (cards/board)
     private static void menuPrints(){
 		String[] options = {
 	        	"Print Board",
@@ -186,6 +194,7 @@ public class Menus {
 		}
     }
     
+    // main menu
     private static void menuMain(){
     	Boolean exit = false;
 		String[] options = {

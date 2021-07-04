@@ -13,13 +13,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,8 +24,6 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
-// TODO:
-// 6. Think and try edge cases
 
 // Coding style:
 // Classes: 			ClassName
@@ -44,6 +39,7 @@ public class BoardGameBuilder {
 	ArrayList<Square> board;
 	HashMap<String,ArrayList<Surprise>> surprise_cards;
 	
+	// Constructor
 	public BoardGameBuilder() {
 		name = "Monopoly";
 		description = "A wonderful game!";
@@ -56,7 +52,7 @@ public class BoardGameBuilder {
 	}
 	
 	public void setChosenSize(int size) {
-		if (size%4 ==0) {
+		if (size%4 ==0) { // board is square
 			chosen_size=size;
 			LOG(chosen_size);
 		}
@@ -128,7 +124,7 @@ public class BoardGameBuilder {
 	
 	public int deleteSquare(String name) {
 		Square s = getSquareByName(name);
-		if (s == null)
+		if (s == null) // no square
 			return -1;
 		board.remove(s);
 		LOG(s);
@@ -138,7 +134,7 @@ public class BoardGameBuilder {
 	public int swapSquare(Square s1, Square s2) {
 		if (!( board.contains(s2) && board.contains(s1) ))
 			return -1;	
-		Collections.swap(board, board.indexOf(s1), board.indexOf(s2)); //do the same :(
+		Collections.swap(board, board.indexOf(s1), board.indexOf(s2));
 		LOG(s1);
 		return 0;
 	}
@@ -277,9 +273,7 @@ public class BoardGameBuilder {
     	return 0;
 	}
 	
-	public void importBoard(String file_name) {
-		//TODO: let the player know current board will be deleted
-		
+	public void importBoard(String file_name) {		
 		//read from file
 		String text = "";
 		try {
@@ -417,10 +411,7 @@ public class BoardGameBuilder {
 		System.out.println("[ERROR] couldn't find " + name);
 		return null;
 	}
-	
-	public void printSquareByName(String name) {
-		// TODO: using find square..
-	}
+
 	
 	public void addSurprise(String key, Surprise s) {
 		ArrayList<Surprise> temp = this.surprise_cards.get(key);
