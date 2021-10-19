@@ -2,9 +2,7 @@ package monopoly;
 
 public class Test {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
+	public static void main(String[] args) {		
 		// create Code Board
 		BoardGameBuilder game = new BoardGameBuilder();
 		game.setChosenSize(16);
@@ -55,7 +53,6 @@ public class Test {
 		game.SetGroup("Stam", "Stam", "White");
 		game.AddSquare(new SimpleSquare("Hi", "How you doing?", game.getGroup("Stam"), 10*1024));
 		game.deleteGroup("Stam");
-		game.printSquareByName("Hi");
 		game.deleteSquare("Hi");
 		game.swapSquare(game.getSquareByName("C++"), game.getSquareByName("C"));
 		
@@ -64,6 +61,7 @@ public class Test {
 		game2.importBoard("CodeBoard");
 		game2.printBoard(null);
 		
+		// test some prints
 		game.PrintAllCards(null);
 		game.printAllSquares(null);
 		game.printBoard(null);

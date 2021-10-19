@@ -1,7 +1,5 @@
 package monopoly;
 
-import java.util.Arrays;
-
 import javax.swing.JOptionPane;
 
 public class SimpleSquare extends Square implements Cardable {
@@ -9,7 +7,6 @@ public class SimpleSquare extends Square implements Cardable {
 	private int value;
 	
 	//CTOR
-	
 	public SimpleSquare(String name, String description, Group group, int value) {
 		super(name,description,group);
 		this.value = value;
