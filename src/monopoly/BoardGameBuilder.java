@@ -331,7 +331,7 @@ public class BoardGameBuilder {
 				this.AddSquare(new SpecialSquare(info[2], info[3], g, info[1]));
 		}
 	}
-	
+	//
 	public void printBoard(InputDialog frame) {
 		//this was one of the more challenging methods.
 		//we are printing the game's board.
